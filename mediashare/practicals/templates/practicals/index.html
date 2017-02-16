@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'practicals/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'practicals/style.css' %}" />
+<script src="{% static 'practicals/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'practicals/bootstrap.min.js' %}"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Main</title>
+</head>
+{% if subjects %}
+<body style="font-size:40px;font-family:Verdana">
+
+	<div id="heading">
+	<h1>CSE 2nd Year<br /> <small>Practicals</small></h1>
+	</div>
+
+	<div id="subjects" align="center" width="60%">
+
+    			{% for subject in subjects %}
+        		<h3><a href="/practicals/{{ subject.subject_name }}/1">{{ subject.subject_name }}</a></h3>
+   				 {% endfor %}
+
+	</div>
+		{% else %}
+    		<p>Coming Soon.</p>
+		{% endif %}
+
+<footer>Go here for disqus --> <a href="/practicals/disqus/"</footer>
+</body>
+</html>

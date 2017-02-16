@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'practicals/styles.css' %}" />
+<script src="{% static 'practicals/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'practicals/bootstrap.min.js' %}"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Main</title>
+</head>
+{% if menu_items %}
+{% if subjects %}
+{% if objectives %}
+<body>
+<center>
+
+	<div id="heading" class="title">
+	<h1>{{ menu_items }}<br /></h1>
+	</div>
+
+	<section class="box" id="pr1" align="center">
+        <h2 class="box-title">{{ menu_items.title }}</h2>
+        <div class="box-content">
+          <ul>
+    			{% for objective in objectives %}
+        		<li>{{ objective.objective|safe|linebreaks }}</a></li>
+   				 {% endfor %}
+    		</ul>
+        </div>
+      </section>
+    {% endif %}
+		{% else %}
+    		<p>Coming Soon.</p>
+		{% endif %}
+{% endif %}
+    <footer class="panel-footer">
+        <p>with <span class="heart">❤</span> by Pranav</a></p>
+      </footer>
+    </center>
+
+</body>
+</html>

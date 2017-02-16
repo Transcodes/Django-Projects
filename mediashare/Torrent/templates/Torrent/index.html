@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+{% load static %}
+	<head>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<title>Torrents</title>
+		<meta name="description" content="A search input that morphs into a fullscreen search page." />
+		<meta name="keywords" content="search, input, effect, morph, transition, inspiration" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link href='http://fonts.googleapis.com/css?family=Raleway:100,700,800' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="{% static 'Torrent/css/demo.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'Torrent/css/component.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'Torrent/css/normalize.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'Torrent/font/font-awesome-4.2.0/css/font-awesome.min.css' %}" />
+		<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.16/clipboard.min.js"></script>
+		<link rel="shortcut icon" href="{% static 'Torrent/torrent.png' %}">
+	    <meta name="mobile-web-app-capable" content="yes">
+        <link rel="icon" sizes="192x192" href="{% static 'Torrent/torrent.png' %}">
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+		<!--[if IE]>
+  		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<style type="text/css">
+			.custom_font{
+				font-size: 15px;
+				color: black;
+				font-style: bold;
+				align-self: center;
+				max-width: 80%;
+				color: #ec5a62;
+			}
+		</style>
+	</head>
+	<body link="black">
+		<div class="container">
+			<div id="morphsearch" class="morphsearch">
+				<form class="morphsearch-form" action="/torrent/search/" method="get">
+					<input class="morphsearch-input custom_font" type="search" placeholder="Search..." name="query"/>
+					<button class="morphsearch-submit" type="submit" onclick="submit()">Search</button>
+				</form>
+
+				<span class="morphsearch-close"></span>
+			</div><!-- /morphsearch -->
+			<div class="overlay"></div>
+		</div><!-- /container -->
+		<!-- THIS IS THE MAIN BODY -->
+		<center>
+
+
+		<div class="container" style="background-color: #eee;border-radius: 10px;margin-top: 150px;margin-right: 10px;margin-left: 10px;margin-bottom: 20px" >
+		{% if torrent %}
+			<ul class="demo-list-item mdl-list" style="align-content: left;">
+			{% for i in torrent %}
+			  <li class="mdl-list__item" style="padding-right: 8px">
+			    <span class="mdl-list__item-primary-content">
+			      {{ i.title }}
+			    </span><button type="button" class="mdl-button mdl-js-button mdl-button--icon" onclick="copyTextToClipboard('{{ i.hash }}');copyalert();">
+						  <i class="material-icons">attachment</i>
+					   </button>
+			  </li>
+
+
+			  {% endfor %}
+			</ul>
+    		<!-- COPY ALERT -->
+    		<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+              <div class="mdl-snackbar__text container" style="font-family: 'Roboto' 100;font-size: 20px" align="center"></div>
+                  <button class="mdl-snackbar__action" type="button"></button>
+                </div>
+                <script>
+                function copyalert(){
+                    'use strict';
+                      var snackbarContainer = document.querySelector('#demo-toast-example');
+                        var data = {message: 'Magnet Link Copied!', timeout: 1000 };
+                        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                }
+                </script>
+
+
+
+		<!--END ALERT -->
+
+		{% endif %}
+		</div>
+		{% if torrent %}
+				<nav aria-label="Page navigation">
+					<ul class="pagination">
+					{% if torrent.has_previous %}
+					<li><a href="?page={{ torrent.previous_page_number }}" aria-label="Previous"><span aria-hidden="true"><strong>Previous</strong></span></a></li>
+
+					{% endif %}
+
+
+					{% if torrent.has_next %}
+					<li><a href="?page={{ torrent.next_page_number }}" aria-label="Next"><span aria-hidden="true" style="padding-left:15px;padding-right:15px"><strong>Next</strong></span></a></li>
+
+					{% endif %}
+					</ul>
+				</nav>
+				{% endif %}
+		</center>
+		<script type="text/javascript">
+			    function update(h)
+				{
+				    try
+				    {
+				    	var hash = h;
+				        var data = "magnet:"
+				            + "?xt=urn:btih:" + h
+				            + "&dn=" + encodeURIComponent(h)
+				            + "&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80"
+				            + "&tr=udp%3A%2F%2Fopentor.org%3A2710"
+				            + "&tr=udp%3A%2F%2Ftracker.ccc.de%3A80"
+				            + "&tr=udp%3A%2F%2Ftracker.blackunicorn.xyz%3A6969"
+				            + "&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969"
+				            + "&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969"
+				            ;
+				        return data;
+				    }
+				    catch(e)
+				    {
+				        alert("exception: " + e);
+				    }
+				}
+
+
+
+			  	function copyTextToClipboard(text) {
+				  var textArea = document.createElement("textarea");
+				  textArea.style.position = 'fixed';
+				  textArea.style.top = 0;
+				  textArea.style.left = 0;
+
+				  // Ensure it has a small width and height. Setting to 1px / 1em
+				  // doesn't work as this gives a negative w/h on some browsers.
+				  textArea.style.width = '2em';
+				  textArea.style.height = '2em';
+
+				  // We don't need padding, reducing the size if it does flash render.
+				  textArea.style.padding = 0;
+
+				  // Clean up any borders.
+				  textArea.style.border = 'none';
+				  textArea.style.outline = 'none';
+				  textArea.style.boxShadow = 'none';
+
+				  // Avoid flash of white box if rendered for any reason.
+				  textArea.style.background = 'transparent';
+
+
+				  textArea.value = update(text);
+
+				  document.body.appendChild(textArea);
+
+				  textArea.select();
+
+				  try {
+				    var successful = document.execCommand('copy');
+				    var msg = successful ? 'successful' : 'unsuccessful';
+				    console.log('Copying text command was ' + msg);
+				  } catch (err) {
+				    console.log('Oops, unable to copy');
+				  }
+
+				  document.body.removeChild(textArea);
+				}
+				function close(){
+					document.getElementById("success_message").style.display = "none";
+				}
+			  </script>
+
+
+
+		<script src="{% static 'Torrent/js/classie.js' %}"></script>
+		<script>
+			(function() {
+				var morphSearch = document.getElementById( 'morphsearch' ),
+					input = morphSearch.querySelector( 'input.morphsearch-input' ),
+					ctrlClose = morphSearch.querySelector( 'span.morphsearch-close' ),
+					isOpen = isAnimating = false,
+					// show/hide search area
+					toggleSearch = function(evt) {
+						// return if open and the input gets focused
+						if( evt.type.toLowerCase() === 'focus' && isOpen ) return false;
+
+						var offsets = morphsearch.getBoundingClientRect();
+						if( isOpen ) {
+							classie.remove( morphSearch, 'open' );
+
+							// trick to hide input text once the search overlay closes
+							// todo: hardcoded times, should be done after transition ends
+							if( input.value !== '' ) {
+								setTimeout(function() {
+									classie.add( morphSearch, 'hideInput' );
+									setTimeout(function() {
+										classie.remove( morphSearch, 'hideInput' );
+										input.value = '';
+									}, 300 );
+								}, 500);
+							}
+
+							input.blur();
+						}
+						else {
+							classie.add( morphSearch, 'open' );
+						}
+						isOpen = !isOpen;
+					};
+
+				// events
+				input.addEventListener( 'focus', toggleSearch );
+				ctrlClose.addEventListener( 'click', toggleSearch );
+				// esc key closes search overlay
+				// keyboard navigation events
+				document.addEventListener( 'keydown', function( ev ) {
+					var keyCode = ev.keyCode || ev.which;
+					if( keyCode === 27 && isOpen ) {
+						toggleSearch(ev);
+					}
+				} );
+
+
+				/***** for demo purposes only: don't allow to submit the form *****/
+				morphSearch.querySelector( 'button[type="submit"]' ).addEventListener( 'click', function(ev) { ev.preventDefault(); } );
+			})();
+		</script>
+	</body>
+</html>
